@@ -8,22 +8,17 @@ import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ReceiptIcon from '@material-ui/icons/Receipt'
 import Typography from '@material-ui/core/Typography'
 import { ToDoListForm } from './ToDoListForm'
+import axios from 'axios';
 
-const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 const getPersonalTodos = () => {
-  return sleep(1000).then(() => Promise.resolve({
-    '0000000001': {
-      id: '0000000001',
-      title: 'First List',
-      todos: ['First todo of first list!']
-    },
-    '0000000002': {
-      id: '0000000002',
-      title: 'Second List',
-      todos: ['First todo of second list!']
-    }
-  }))
+  return axios.get("http://127.0.0.1:3001/todos").then(res => res.data)
+}
+const postPersonalTodos = (id, todos) => {
+  return axios.post(`http://127.0.0.1:3001/todos/${id}`, { todos }).then(res => {
+    console.log(res)
+    console.log(res.data)
+  })
 }
 
 export const ToDoLists = ({ style }) => {
@@ -62,12 +57,16 @@ export const ToDoLists = ({ style }) => {
       key={activeList} // use key to make React recreate component to reset internal state
       toDoList={toDoLists[activeList]}
       saveToDoList={(id, { todos }) => {
+
         const listToUpdate = toDoLists[id]
         setToDoLists({
           ...toDoLists,
           [id]: { ...listToUpdate, todos }
         })
+
+        postPersonalTodos(id, todos)
       }}
+
     />}
   </Fragment>
 }
