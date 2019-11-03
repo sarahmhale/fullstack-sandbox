@@ -31,12 +31,17 @@ const useStyles = makeStyles({
 })
 
 export const ToDoListForm = ({ toDoList, saveToDoList }) => {
+  const blankTodo = { text: '', completed: false }
   const classes = useStyles()
   const [todos, setTodos] = useState(toDoList.todos)
 
   const handleSubmit = event => {
     event.preventDefault()
     saveToDoList(toDoList.id, { todos })
+  }
+
+  const addTodo = () => {
+    setTodos([...todos, { ...blankTodo }])
   }
 
   return (
@@ -46,20 +51,30 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
           {toDoList.title}
         </Typography>
         <form onSubmit={handleSubmit} className={classes.form}>
-          {todos.map((name, index) => (
+          {todos.map((todo, index) => (
             <div key={index} className={classes.todoLine}>
               <Typography className={classes.standardSpace} variant='h6'>
                 {index + 1}
               </Typography>
+              <input
+                name="isCompleted"
+                type="checkbox"
+                checked={todo.completed}
+                onChange={() => {
+                  setTodos([ // immutable update
+                    ...todos.slice(0, index),
+                    { text: todo.text, completed: !todo.completed },
+                    ...todos.slice(index + 1)])
+                }}
+              />
               <TextField
                 label='What to do?'
-                value={name}
+                value={todo.text}
                 onChange={event => {
                   setTodos([ // immutable update
                     ...todos.slice(0, index),
-                    event.target.value,
-                    ...todos.slice(index + 1)
-                  ])
+                    { text: event.target.value, completed: false },
+                    ...todos.slice(index + 1)])
                 }}
                 className={classes.textField}
               />
@@ -82,9 +97,7 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
             <Button
               type='button'
               color='primary'
-              onClick={() => {
-                setTodos([...todos, ''])
-              }}
+              onClick={addTodo}
             >
               Add Todo <AddIcon />
             </Button>

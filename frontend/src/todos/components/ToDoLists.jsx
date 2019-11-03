@@ -15,10 +15,7 @@ const getPersonalTodos = () => {
   return axios.get("http://127.0.0.1:3001/todos").then(res => res.data)
 }
 const postPersonalTodos = (id, todos) => {
-  return axios.post(`http://127.0.0.1:3001/todos/${id}`, { todos }).then(res => {
-    console.log(res)
-    console.log(res.data)
-  })
+  return axios.post(`http://127.0.0.1:3001/todos/${id}`, { todos }).then(res => res.data)
 }
 
 export const ToDoLists = ({ style }) => {
@@ -49,6 +46,11 @@ export const ToDoLists = ({ style }) => {
               <ReceiptIcon />
             </ListItemIcon>
             <ListItemText primary={toDoLists[key].title} />
+            {toDoLists[key].completed ? <Typography
+              component='h2'
+            >
+              Completed
+        </Typography> : null}
           </ListItem>)}
         </List>
       </CardContent>
@@ -57,15 +59,10 @@ export const ToDoLists = ({ style }) => {
       key={activeList} // use key to make React recreate component to reset internal state
       toDoList={toDoLists[activeList]}
       saveToDoList={(id, { todos }) => {
-
-        const listToUpdate = toDoLists[id]
-        setToDoLists({
-          ...toDoLists,
-          [id]: { ...listToUpdate, todos }
-        })
-
-        postPersonalTodos(id, todos)
+        postPersonalTodos(id, todos).then(setToDoLists)
       }}
+
+
 
     />}
   </Fragment>
