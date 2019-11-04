@@ -13,7 +13,7 @@ const useStyles = makeStyles({
   card: {
     margin: '1rem'
   },
-  todoLine: {
+  toDoLine: {
     display: 'flex',
     alignItems: 'center'
   },
@@ -31,17 +31,17 @@ const useStyles = makeStyles({
 })
 
 export const ToDoListForm = ({ toDoList, saveToDoList }) => {
-  const blankTodo = { text: '', completed: false }
+  const blankToDo = { text: '', completed: false }
   const classes = useStyles()
-  const [todos, setTodos] = useState(toDoList.todos)
+  const [toDos, setToDos] = useState(toDoList.toDos)
 
   const handleSubmit = event => {
     event.preventDefault()
-    saveToDoList(toDoList.id, { todos })
+    saveToDoList(toDoList.id, { toDos })
   }
 
-  const addTodo = () => {
-    setTodos([...todos, { ...blankTodo }])
+  const addToDo = () => {
+    setToDos([...toDos, { ...blankToDo }])
   }
 
   return (
@@ -51,30 +51,30 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
           {toDoList.title}
         </Typography>
         <form onSubmit={handleSubmit} className={classes.form}>
-          {todos.map((todo, index) => (
-            <div key={index} className={classes.todoLine}>
+          {toDos.map((toDo, index) => (
+            <div key={index} className={classes.toDoLine}>
               <Typography className={classes.standardSpace} variant='h6'>
                 {index + 1}
               </Typography>
               <input
                 name="isCompleted"
                 type="checkbox"
-                checked={todo.completed}
+                checked={toDo.completed}
                 onChange={() => {
-                  setTodos([ // immutable update
-                    ...todos.slice(0, index),
-                    { text: todo.text, completed: !todo.completed },
-                    ...todos.slice(index + 1)])
+                  setToDos([ // immutable update
+                    ...toDos.slice(0, index),
+                    { text: toDo.text, completed: !toDo.completed },
+                    ...toDos.slice(index + 1)])
                 }}
               />
               <TextField
                 label='What to do?'
-                value={todo.text}
+                value={toDo.text}
                 onChange={event => {
-                  setTodos([ // immutable update
-                    ...todos.slice(0, index),
+                  setToDos([ // immutable update
+                    ...toDos.slice(0, index),
                     { text: event.target.value, completed: false },
-                    ...todos.slice(index + 1)])
+                    ...toDos.slice(index + 1)])
                 }}
                 className={classes.textField}
               />
@@ -83,9 +83,9 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
                 color='secondary'
                 className={classes.standardSpace}
                 onClick={() => {
-                  setTodos([ // immutable delete
-                    ...todos.slice(0, index),
-                    ...todos.slice(index + 1)
+                  setToDos([ // immutable delete
+                    ...toDos.slice(0, index),
+                    ...toDos.slice(index + 1)
                   ])
                 }}
               >
@@ -97,7 +97,7 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
             <Button
               type='button'
               color='primary'
-              onClick={addTodo}
+              onClick={addToDo}
             >
               Add Todo <AddIcon />
             </Button>

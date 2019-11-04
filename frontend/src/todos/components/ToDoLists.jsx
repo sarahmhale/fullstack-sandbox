@@ -11,11 +11,15 @@ import { ToDoListForm } from './ToDoListForm'
 import axios from 'axios';
 
 
-const getPersonalTodos = () => {
-  return axios.get("http://127.0.0.1:3001/todos").then(res => res.data)
+const getPersonalToDos = (setToDoLists) => {
+  return axios.get("http://127.0.0.1:3001/toDos")
+    .then(res => setToDoLists(res.data))
+    .catch(error => console.log(error))
 }
-const postPersonalTodos = (id, todos) => {
-  return axios.post(`http://127.0.0.1:3001/todos/${id}`, { todos }).then(res => res.data)
+const postPersonalToDos = (id, toDos, setToDoLists) => {
+  return axios.post(`http://127.0.0.1:3001/toDos/${id}`, { toDos })
+    .then(res => setToDoLists(res.data))
+    .catch(error => console.log(error))
 }
 
 export const ToDoLists = ({ style }) => {
@@ -23,8 +27,7 @@ export const ToDoLists = ({ style }) => {
   const [activeList, setActiveList] = useState()
 
   useEffect(() => {
-    getPersonalTodos()
-      .then(setToDoLists)
+    getPersonalToDos(setToDoLists)
   }, [])
 
   if (!Object.keys(toDoLists).length) return null
@@ -46,10 +49,11 @@ export const ToDoLists = ({ style }) => {
               <ReceiptIcon />
             </ListItemIcon>
             <ListItemText primary={toDoLists[key].title} />
-            {toDoLists[key].completed ? <Typography
-              component='h2'
-            >
-              Completed
+            {toDoLists[key].completed ?
+              <Typography
+                component='h2'
+              >
+                Completed
         </Typography> : null}
           </ListItem>)}
         </List>
@@ -58,12 +62,9 @@ export const ToDoLists = ({ style }) => {
     {toDoLists[activeList] && <ToDoListForm
       key={activeList} // use key to make React recreate component to reset internal state
       toDoList={toDoLists[activeList]}
-      saveToDoList={(id, { todos }) => {
-        postPersonalTodos(id, todos).then(setToDoLists)
+      saveToDoList={(id, { toDos }) => {
+        postPersonalToDos(id, toDos, setToDoLists)
       }}
-
-
-
     />}
   </Fragment>
 }

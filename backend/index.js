@@ -8,35 +8,35 @@ app.use(cors())
 
 const PORT = 3001
 
-let todos = {
+let toDos = {
     '0000000001': {
         id: '0000000001',
         title: 'Bacon List',
         completed: false,
-        todos: [{ text: 'First todo of first list!', completed: false }],
+        toDos: [{ text: 'First todo of first list!', completed: false }],
 
     },
     '0000000002': {
         id: '0000000002',
         title: 'Second List',
         completed: false,
-        todos: [{ text: 'First todo of second list!', completed: false }]
+        toDos: [{ text: 'First todo of second list!', completed: false }]
     }
 }
 
-app.get('/todos', (req, res) => {
-    return res.send(todos)
+app.get('/toDos', (req, res) => {
+    return res.send(toDos)
 });
 
-app.post('/todos/:id', (req, res) => {
-    todos[req.params.id].completed = true
-    req.body.todos.map((todo) => {
-        if (!todo.completed) {
-            todos[req.params.id].completed = false
+app.post('/toDos/:id', (req, res) => {
+    toDos[req.params.id].completed = true
+    req.body.toDos.map((toDo) => {
+        if (!toDo.completed) {
+            toDos[req.params.id].completed = false
         }
     })
-    todos[req.params.id].todos = req.body.todos;
-    return res.send(todos);
+    toDos[req.params.id].toDos = req.body.toDos;
+    return res.send(toDos);
 });
 
 app.listen(PORT, () => console.log(`Example app listening on port ${PORT}!`))
